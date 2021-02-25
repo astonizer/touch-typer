@@ -1,29 +1,33 @@
+import {
+	Button,
+	Container,
+	Paper,
+	TextField,
+	Typography,
+} from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 
-import { Button, TextField, Typography } from '@material-ui/core';
-
 import words from '../../data/words.json';
+import { useStyles } from './styles';
 
 function Game({ time, exitGame }) {
-	const [play, setPlay] = useState(true);
-	const [newWord, setNewWord] = useState('');
+	const [newWord, setNewWord] = useState(generateRandomWord(words));
 	const [score, setScore] = useState(0);
-	const [timeOutFunc, setTimeOutFunc] = useState();
-
-	// Non-state variable to avoid unnecessary re-renders
-	let timeLeft = time;
-
-	// const [timeLeft, setTimeLeft] = useState(time);
+	const [timeLeft, setTimeLeft] = useState(time);
+	const classes = useStyles();
 
 	useEffect(() => {
-		setNewWord(generateRandomWord(words));
-		timeLeft = time;
-		// setTimeLeft(time);
-		let intervalId = setInterval(countdown, 1000);
+		let intervalId = setTimeout(() => {
+			if (time > 0) {
+				setTimeLeft(timeLeft - 1);
+			}
+		}, 1000);
+
+		if (timeLeft === 0) handleExit();
 		return () => {
-			clearInterval(intervalId);
+			clearTimeout(intervalId);
 		};
-	}, []);
+	}, [timeLeft]);
 
 	/**
 	 *
@@ -36,39 +40,73 @@ function Game({ time, exitGame }) {
 		return words[randomIndex];
 	}
 
-	function countdown() {
-		console.log('time reduced to ', timeLeft);
-		if (timeLeft > 0) {
-			// setTimeLeft(timeLeft - 1);
-			timeLeft--;
-		} else if (timeLeft === 0) {
-			clearInterval(timeOutFunc);
-			exitGame();
+	/**
+	 *
+	 * @param {Object} e
+	 * @description constantly checks the input
+	 */
+	function handleChange(e) {
+		if (e.target.value === newWord) {
+			e.target.value = '';
+			setScore(score + 1);
+			setNewWord(generateRandomWord(words));
+			setTimeLeft(time);
 		}
 	}
 
+	/**
+	 *
+	 * @description exit the game on losing
+	 */
+	function handleExit() {
+		if (score > localStorage.getItem('typing-score'))
+			localStorage.setItem('typing-score', score);
+		exitGame();
+	}
+
 	return (
-		<div>
-			<Typography variant="h4">
+		<div className={classes.root}>
+			<Typography variant="h4" className={classes.text}>
 				Type the given word in {time} seconds
 			</Typography>
-			<Typography variant="h3">{newWord}</Typography>
+			<Container maxWidth="xs">
+				<Paper>
+					<Typography variant="h3" className={classes.text}>
+						{newWord}
+					</Typography>
+				</Paper>
+			</Container>
 			<TextField
-				id="outlined-password-input"
-				label="Type here"
+				autoFocus
 				type="text"
-				autoComplete="current-password"
+				onChange={handleChange}
 				variant="outlined"
+				className={classes.text}
 			/>
-			<Typography variant="h4">Time left: {timeLeft}</Typography>
-			<Typography variant="h4">Score: {score}</Typography>
-			<Typography variant="h5">
-				Lorem ipsum, dolor sit amet consectetur adipisicing elit. Cum
-				neque ipsam ut veritatis nulla facere quibusdam nam ipsa
-				accusantium recusandae nobis sit, ducimus fuga quisquam minima
-				quae vero reprehenderit. Saepe!
+			<Typography variant="h4" className={classes.text}>
+				Time left: <span className={classes.red}>{timeLeft}</span>
 			</Typography>
-			<Button onClick={() => exitGame()} size="large" variant="contained">
+			<Typography variant="h4" className={classes.text}>
+				Score: {score}
+			</Typography>
+			<Typography variant="h6" className={classes.text}>
+				~ Don't limit yourself to the given time, try to type it as fast
+				as you can.
+				<br />~ Scoring is based purely on the completion of typing the
+				word and not on the time taken.
+				<br />~ Some words might actually feel difficult, but they are
+				randomly generated so it's not under control.
+				<br />~ The words are generated randomly so don't mind any CUSS
+				words, if they show up.
+				<br />~ Note: These instructions are only to fill up the area, I
+				hope you understand.
+			</Typography>
+			<Button
+				variant="contained"
+				className={classes.btn}
+				color="primary"
+				onClick={handleExit}
+			>
 				Exit
 			</Button>
 		</div>
