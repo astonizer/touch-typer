@@ -1,0 +1,17 @@
+{
+  "files": {
+    "main.js": "/touch-typer/static/js/main.cd9f72a4.chunk.js",
+    "main.js.map": "/touch-typer/static/js/main.cd9f72a4.chunk.js.map",
+    "runtime-main.js": "/touch-typer/static/js/runtime-main.24d79c2c.js",
+    "runtime-main.js.map": "/touch-typer/static/js/runtime-main.24d79c2c.js.map",
+    "static/js/2.d6f2563b.chunk.js": "/touch-typer/static/js/2.d6f2563b.chunk.js",
+    "static/js/2.d6f2563b.chunk.js.map": "/touch-typer/static/js/2.d6f2563b.chunk.js.map",
+    "index.html": "/touch-typer/index.html",
+    "static/js/2.d6f2563b.chunk.js.LICENSE.txt": "/touch-typer/static/js/2.d6f2563b.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.24d79c2c.js",
+    "static/js/2.d6f2563b.chunk.js",
+    "static/js/main.cd9f72a4.chunk.js"
+  ]
+}
